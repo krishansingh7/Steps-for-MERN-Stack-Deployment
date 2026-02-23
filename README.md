@@ -1,108 +1,175 @@
-🚀 Deploy MERN Stack App on AWS (EC2 + PM2 + NGINX + SSL)
+# 🚀 MERN Stack App Deployment on AWS  
+**Deploy Node.js + React App using EC2, PM2, NGINX & Free SSL (Let’s Encrypt)**
 
-A complete beginner-friendly step-by-step guide to deploy a MERN Stack Application on AWS using:
+[![YouTube Demo](https://img.youtube.com/vi/FvwRSpmVYyw/maxresdefault.jpg)](https://youtu.be/FvwRSpmVYyw)
 
-🖥 EC2 (Ubuntu)
+> 🎥 *Click the image above to watch the full deployment walkthrough video!*
 
-⚙ PM2 (Process Manager)
+---
 
-🌐 NGINX (Reverse Proxy)
+## 🛠️ Table of Contents
 
-🔐 Let’s Encrypt (Free SSL)
+- 🔹 [Introduction](#introduction)
+- 📦 [Tech Stack](#tech-stack)
+- 🧱 [Prerequisites](#prerequisites)
+- ☁️ [Step 1 — AWS Setup](#step-1---aws-setup)
+- 💻 [Step 2 — Connect to EC2](#step-2---connect-to-ec2)
+- 🔄 [Step 3 — Update Server](#step-3---update-server)
+- 🔧 [Step 4 — Install Node.js](#step-4---install-nodejs)
+- 📁 [Step 5 — Clone & Install App](#step-5---clone--install-app)
+- 🚀 [Step 6 — PM2 Setup](#step-6---pm2-setup)
+- 🌐 [Step 7 — Install & Configure NGINX](#step-7---install--configure-nginx)
+- 🌍 [Step 8 — Connect Domain to EC2](#step-8---connect-domain-to-ec2)
+- 🔐 [Step 9 — Enable HTTPS with Let’s Encrypt](#step-9---enable-https-with-lets-encrypt)
+- 🔁 [Step 10 — SSL Auto Renewal](#step-10---ssl-auto-renewal)
+- 🛡️ [Production Best Practices](#production-best-practices)
+- 🎉 [Deployment Complete](#deployment-complete)
 
-📌 Tech Stack
+---
 
-MongoDB
+## 🧠 Introduction
 
-Express.js
+This guide helps you deploy a **MERN (MongoDB, Express, React, Node.js)** application to a **production-ready server** using:
 
-React.js
+✔️ AWS EC2 (Ubuntu)  
+✔️ PM2 (Process Manager)  
+✔️ NGINX (Reverse Proxy)  
+✔️ Let’s Encrypt (Free SSL Certificate)
 
-Node.js
+---
 
-AWS EC2
+## 📦 Tech Stack
 
-PM2
+- MongoDB
+- Express.js
+- React.js
+- Node.js
+- AWS EC2
+- PM2
+- NGINX
+- Let’s Encrypt
 
-NGINX
+---
 
-Let’s Encrypt
+## 🧾 Prerequisites
 
-🧱 Deployment Architecture
-User → Domain → NGINX → Node.js App (PM2) → MongoDB
+Make sure you have:
 
-NGINX handles incoming traffic
+✔️ AWS Account  
+✔️ Domain Name  
+✔️ GitHub repository of your MERN project  
+✔️ Basic terminal knowledge  
 
-PM2 keeps Node app running
+---
 
-SSL secures your website (HTTPS)
+# ☁️ Step 1 — AWS Setup
 
-✅ Step 1: Create AWS Account
+1. Go to https://aws.amazon.com/
+2. Open **EC2 Dashboard**
+3. Click **Launch Instance**
+4. Select:
+   - Ubuntu 22.04 LTS
+   - Instance type: `t2.medium` (or `t2.micro` for free tier)
+5. Create a Key Pair (.pem file)
+6. Allow these ports:
+   - 22 (SSH)
+   - 80 (HTTP)
+   - 443 (HTTPS)
 
-Create a free account:
-👉 https://aws.amazon.com/
+---
 
-✅ Step 2: Launch EC2 Instance
+# 💻 Step 2 — Connect to EC2
 
-Open AWS Dashboard → EC2
-
-Click Launch Instance
-
-Choose:
-
-Ubuntu 22.04 LTS
-
-Instance type: t2.medium
-
-Create a Key Pair (.pem file)
-
-Allow ports:
-
-22 (SSH)
-
-80 (HTTP)
-
-443 (HTTPS)
-
-✅ Step 3: Connect to EC2 via SSH
+```bash
 chmod 400 your-key.pem
-ssh -i your-key.pem ubuntu@your-ec2-public-ip
-✅ Step 4: Update Server
+ssh -i your-key.pem ubuntu@<EC2_PUBLIC_IP>
+```
+
+---
+
+# 🔄 Step 3 — Update Server
+
+```bash
 sudo apt update && sudo apt upgrade -y
-✅ Step 5: Install Node.js & NPM
+```
+
+---
+
+# 🔧 Step 4 — Install Node.js
+
+```bash
 curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt install nodejs -y
+
 node -v
 npm -v
-✅ Step 6: Clone Your Project
-git clone https://github.com/yourusername/your-repo.git
-cd your-repo
+```
+
+---
+
+# 📁 Step 5 — Clone & Install App
+
+```bash
+git clone https://github.com/yourusername/yourrepo.git
+cd yourrepo
 npm install
-✅ Step 7: Install PM2
+```
+
+If backend is inside a folder:
+
+```bash
+cd backend
+npm install
+```
+
+---
+
+# 🚀 Step 6 — PM2 Setup
+
+Install PM2 globally:
+
+```bash
 sudo npm install pm2 -g
+```
 
 Start your app:
 
+```bash
 pm2 start index.js
+```
 
-Check running processes:
+Check running apps:
 
+```bash
 pm2 list
+```
 
-Enable auto restart on reboot:
+Enable auto-start on reboot:
 
+```bash
 pm2 startup
 pm2 save
-✅ Step 8: Install NGINX
+```
+
+---
+
+# 🌐 Step 7 — Install & Configure NGINX
+
+Install NGINX:
+
+```bash
 sudo apt install nginx -y
-✅ Step 9: Configure NGINX
+```
 
-Open config file:
+Edit config:
 
+```bash
 sudo nano /etc/nginx/sites-available/default
+```
 
-Replace content with:
+Replace with:
 
+```nginx
 server {
     listen 80;
     server_name yourdomain.com www.yourdomain.com;
@@ -116,89 +183,100 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 }
+```
 
-Test config:
+Test configuration:
 
+```bash
 sudo nginx -t
+```
 
 Restart NGINX:
 
+```bash
 sudo systemctl restart nginx
-✅ Step 10: Point Domain to EC2
+```
 
-Go to your domain DNS settings:
+---
 
-Add an A Record
+# 🌍 Step 8 — Connect Domain to EC2
 
-Type	Name	Value
-A	@	your-ec2-public-ip
+Go to your Domain Provider → DNS Settings
 
-Wait 5–10 minutes.
+Add an A Record:
 
-✅ Step 11: Install SSL (HTTPS)
+| Type | Name | Value |
+|------|------|-------|
+| A | @ | EC2_PUBLIC_IP |
+
+Wait 5–10 minutes for DNS propagation.
+
+---
+
+# 🔐 Step 9 — Enable HTTPS with Let’s Encrypt
 
 Install Certbot:
 
+```bash
 sudo apt install certbot python3-certbot-nginx -y
+```
 
 Generate SSL:
 
+```bash
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
+```
 
-Choose option to redirect HTTP → HTTPS.
+Choose redirect to HTTPS when prompted.
 
-🔐 Auto Renew SSL
+---
+
+# 🔁 Step 10 — SSL Auto Renewal
+
+```bash
 sudo certbot renew --dry-run
-🎉 Deployment Complete
+```
 
-Visit:
+Let’s Encrypt certificates renew automatically every 90 days.
 
-https://yourdomain.com
+---
 
-Your MERN app is live 🚀
+# 🛡️ Production Best Practices
 
-🛠 If You Have React Frontend
+### Enable Firewall
 
-Build frontend:
-
-npm run build
-
-Copy build files:
-
-sudo cp -r build/* /var/www/html/
-
-Update NGINX config:
-
-root /var/www/html;
-index index.html;
-
-location / {
-    try_files $uri /index.html;
-}
-
-Restart NGINX:
-
-sudo systemctl restart nginx
-🔥 Useful PM2 Commands
-pm2 restart app
-pm2 stop app
-pm2 delete app
-pm2 logs
-🛡 Production Tips
-
-Use .env file
-
-Never push .env to GitHub
-
-Use MongoDB Atlas
-
-Enable firewall:
-
+```bash
 sudo ufw allow OpenSSH
 sudo ufw allow 'Nginx Full'
 sudo ufw enable
-⭐ Support
+```
 
-If this helped you:
+### Use Environment Variables
 
-Star ⭐ this repository
+Create `.env` file:
+
+```
+PORT=5000
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_secret_key
+```
+
+Never push `.env` to GitHub.
+
+---
+
+# 🎉 Deployment Complete
+
+Now visit:
+
+```
+https://yourdomain.com
+```
+
+Your MERN app is live 🚀
+
+---
+
+## ⭐ If This Helped You
+
+Give this repository a ⭐ star!
