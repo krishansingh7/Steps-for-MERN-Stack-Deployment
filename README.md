@@ -164,7 +164,8 @@ sudo nano /etc/nginx/sites-available/default
 ```
 
 Replace with:
-
+# Make sure to replace the PORT with the port your backend application is running on.
+# Example: If your backend runs on PORT=5000, use http://localhost:5000
 ```nginx
 server {
     listen 80;
