@@ -1,10 +1,6 @@
 # 🚀 MERN Stack App Deployment on AWS  
 **Deploy Node.js + React App using EC2, PM2, NGINX & Free SSL (Let’s Encrypt)**
 
-[![YouTube Demo](https://img.youtube.com/vi/FvwRSpmVYyw/maxresdefault.jpg)](https://youtu.be/FvwRSpmVYyw)
-
-> 🎥 *Click the image above to watch the full deployment walkthrough video!*
-
 ---
 
 ## 🛠️ Table of Contents
